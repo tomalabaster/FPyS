@@ -1,6 +1,6 @@
 import math
-import pygame
 
+import pygame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
@@ -133,6 +133,37 @@ class Main:
         for vertex in self.terrain:
             glColor3fv((0, 0.25, 0))
             glVertex3fv(vertex)
+        glEnd()
+
+        # draw walls
+        glBegin(GL_QUADS)
+        # left
+        glColor3fv((1, 0.2, 0.2))
+        glVertex3fv((self.left, 0, self.front))
+        glVertex3fv((self.left, 0, self.back))
+        glVertex3fv((self.left, 1, self.back))
+        glVertex3fv((self.left, 1, self.front))
+
+        # right
+        glColor3fv((1, 1, 0.2))
+        glVertex3fv((self.right, 0, self.front))
+        glVertex3fv((self.right, 0, self.back))
+        glVertex3fv((self.right, 1, self.back))
+        glVertex3fv((self.right, 1, self.front))
+
+        # front
+        glColor3fv((1, 0.2, 0.2))
+        glVertex3fv((self.front, 0, self.left))
+        glVertex3fv((self.back, 0, self.left))
+        glVertex3fv((self.back, 1, self.left))
+        glVertex3fv((self.front, 1, self.left))
+
+        # back
+        glColor3fv((1, 1, 0.2))
+        glVertex3fv((self.front, 0, self.right))
+        glVertex3fv((self.back, 0, self.right))
+        glVertex3fv((self.back, 1, self.right))
+        glVertex3fv((self.front, 1, self.right))
         glEnd()
 
         glPopMatrix()
