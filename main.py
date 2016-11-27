@@ -1,12 +1,59 @@
+import asyncio
 import math
+import threading
 
 import pygame
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from autobahn.asyncio.websocket import WebSocketServerProtocol, WebSocketServerFactory
+
+
+class WebSocketServer(WebSocketServerProtocol):
+    def onConnect(self, request):
+        print("Connection from: " + request.peer)
+
+    def onOpen(self):
+        print("Connection open")
+
+    def onMessage(self, payload, isBinary):
+        data = payload.decode('utf8')
+
+        try:
+            data = int(data)
+        except ValueError:
+            """"""
+
+        if data == 0:
+            """"""
+        elif data == 1:
+            Main.player.pos[0] += 1
+        elif data == 2:
+            Main.player.pos[2] -= 1
+        elif data == 3:
+            Main.player.pos[2] += 1
+        elif data == 4:
+            Main.player.pos[0] -= 1
+
+    def onClose(self, wasClean, code, reason):
+        print("WebSocket connection closed: {0}".format(reason))
+
+
+def web_socket_server():
+    loop = asyncio.new_event_loop()
+
+    asyncio.set_event_loop(loop)
+
+    factory = WebSocketServerFactory(u"ws://127.0.0.1:8081")
+    factory.protocol = WebSocketServer
+
+    loop.run_until_complete(loop.create_server(factory, '0.0.0.0', 8081))
+    loop.run_forever()
+
+
+threading.Thread(target=web_socket_server).start()
 
 
 class Camera:
-
     # position of the camera - x, y, z
     pos = [0, 1, 0]
     # rotation of the camera - x, y, z
@@ -48,7 +95,6 @@ class Camera:
 
 
 class Main:
-
     # screen resolution & aspect ratio
     width = 1200
     height = 720
